@@ -1,0 +1,69 @@
+capture_directory: ~
+fixed_frame: map
+target_frame: map
+fix_orientation: true
+rotate_90: false
+enable_antialiasing: true
+show_displays: true
+show_status_bar: true
+show_capture_tools: true
+window_width: 1920
+window_height: 1016
+view_scale: 0.5808473
+offset_x: -2664677
+offset_y: -1432732
+use_latest_transforms: true
+background: "#a0a0a4"
+displays:
+  - type: mapviz_plugins/tile_map
+    name: new display
+    config:
+      visible: true
+      collapsed: false
+      custom_sources:
+        - base_url: http://localhost:8080/wmts/osm/webmercator/{level}/{x}/{y}.png
+          max_zoom: 20
+          name: gmaps
+          type: wmts
+      bing_api_key: AqZzMfQ9DEflT4m9Oz6L3FFrpPd8NLfDaXG4t7-sYi48pwmWih8nUDpnY6TBlNzH
+      source: Stamen (terrain)
+  - type: mapviz_plugins/navsat
+    name: new display
+    config:
+      visible: true
+      collapsed: false
+      topic: /gps/fix
+      color: "#aa0000"
+      draw_style: points
+      position_tolerance: 0
+      buffer_size: 0
+  - type: mapviz_plugins/image
+    name: new display
+    config:
+      visible: false
+      collapsed: true
+      topic: /rgb/image_rect_color
+      anchor: top left
+      units: pixels
+      offset_x: 0
+      offset_y: 7
+      width: 387
+      height: 230
+      keep_ratio: false
+      image_transport: default
+  - type: mapviz_plugins/marker
+    name: new display
+    config:
+      visible: false
+      collapsed: true
+      topic: ""
+  - type: mapviz_plugins/navsat
+    name: new display
+    config:
+      visible: true
+      collapsed: false
+      topic: /gps/filtered
+      color: "#00ff00"
+      draw_style: lines
+      position_tolerance: 0
+      buffer_size: 0

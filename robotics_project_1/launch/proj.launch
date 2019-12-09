@@ -1,0 +1,7 @@
+<launch>
+<node pkg="robotics_project_1" type = "odom_publisher" name = "pub_sub_odom" output="screen"/>
+<node pkg="robotics_project_1" type = "pub_sub_tf" name = "pub_sub_tf"/>
+<!--<node pkg="tf" type="static_transform_publisher" name="back_right" args="0.3 -0.3 0 0 0 0 1 turtle FRleg 100" /> -->
+<node pkg="tf" type="static_transform_publisher" name="back_right" args="0 0.65 0 0 0 0 1 car Lwheel 100" /> 
+<node pkg="tf" type="static_transform_publisher" name="back_left" args="0 -0.65 0 0 0 0 1 car Rwheel 100" />
+</launch>

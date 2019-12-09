@@ -1,0 +1,74 @@
+<launch>
+
+<param name="/use_sim_time" value="true"/>
+
+<node pkg="robotics_project_2" type = "odom_pub" name = "odom_pub" output="screen"/>
+<node pkg="robotics_project_2" type = "tf_pub" name = "tf_pub" output="screen"/>
+<node pkg="tf2_ros" type="static_transform_publisher" name="back_right" args="0 0.65 0 0 0 0 1 base_link Lwheel" /> 
+<node pkg="tf2_ros" type="static_transform_publisher" name="back_left" args="0 -0.65 0 0 0 0 1 base_link Rwheel" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="imu_to_base" args="0 0 0 0 0 0 1 base_link imu_link"/>
+<node pkg="tf2_ros" type="static_transform_publisher" name="bl_gps" args="0 0 0 0 0 0 1 base_link gps"/>
+
+<!-- COMPLEMENTARY FILTER -->
+
+<node pkg="imu_complementary_filter" type="complementary_filter_node" name="complementary_filter_gain_node" output="screen">
+    <param name="do_bias_estimation" value="true"/>
+    <param name="do_adaptive_gain" value="true"/>
+    <param name="use_mag" value="false"/>
+    <param name="gain_acc" value="0.01"/>
+    <param name="gain_mag" value="0.01"/>
+</node>
+
+<!-- EKF ESTIMATION NODE -->
+
+<node pkg="robot_localization" type="ekf_localization_node" name="ekf_filter_node" clear_params="true">
+    <param name="odom0" value="/odom_std"/>
+    <param name="imu0" value="/imu/data"/>
+    
+    <param name="frequency" value="30"/>
+    <param name="sensor_timeout" value="0.1"/>
+    <param name="two_d_mode" value="true"/>
+    
+    <param name="base_link_frame" value="base_link"/>
+    <param name="map_frame" value="map"/>
+    <param name="world_frame" value="map"/>
+    <param name="odom_frame" value="odom"/>
+
+    <param name="transform_time_offset" value="0.0"/>
+    <param name="transform_timeout" value="0.0"/>
+    <param name="publish_tf" value="true"/>  <!-- Publishes transform map->odom  -->
+
+    <rosparam param="odom0_config"> [false, false, false,
+                                    false, false, false,
+                                    true, true, false,
+                                    false, false, true,
+                                    false, false, false]</rosparam>                                
+
+    
+    <rosparam param="imu0_config">  [false, false, false,
+                                    false, false, true,
+                                    false, false, false,
+                                    false,false, true,
+                                    true,true, true]</rosparam>
+    
+    <param name="imu0_differential" value="false"/>
+    <param name="odom0_differential" value="false"/>
+
+
+    <param name="imu0_relative" value="false"/>
+    <param name="odom0_relative" value="true"/>
+
+
+    <param name="print_diagnostics" value="true"/>
+
+    <param name="imu0_remove_gravitational_acceleration" value="true"/>
+</node>
+
+<!-- NAVSAT NODE -->
+
+<node pkg="robot_localization" type="navsat_transform_node" name="gps_transform_node" clear_params="true">
+    <rosparam command="load" file="$(find robotics_project_2)/launch/navsat_transform_param.yaml"/>
+    <remap from="/gps/fix" to="/swiftnav/rear/gps"/>
+</node>
+
+</launch>
